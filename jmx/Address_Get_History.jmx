@@ -11,7 +11,7 @@
       <ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Address Get History">
         <intProp name="ThreadGroup.num_threads">200</intProp>
         <intProp name="ThreadGroup.ramp_time">60</intProp>
-        <longProp name="ThreadGroup.duration">120</longProp>
+        <longProp name="ThreadGroup.duration">90</longProp>
         <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
         <boolProp name="ThreadGroup.scheduler">true</boolProp>
         <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
@@ -23,7 +23,7 @@
       <hashTree>
         <HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="Address Get History" enabled="true">
           <stringProp name="HTTPSampler.domain">127.0.0.1</stringProp>
-          <stringProp name="HTTPSampler.port">8080</stringProp>
+          <stringProp name="HTTPSampler.port">5000</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.path">/v1/tbc/main/address/18Ctsiud6v8txVrNccSsKtobBKKWq1g4R2/history</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
