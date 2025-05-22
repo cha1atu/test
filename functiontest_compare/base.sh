@@ -1,11 +1,11 @@
 #!/bin/bash
 
 # 创建一个目录来存储输出文件（如果它还不存在）
-OUTPUT_DIR="main"
+OUTPUT_DIR="base"
 mkdir -p "$OUTPUT_DIR"
 
 # 检查 curlall.txt 是否存在
-CURL_COMMAND_FILE="./main.txt"
+CURL_COMMAND_FILE="./base.txt"
 if [ ! -f "$CURL_COMMAND_FILE" ]; then
   echo "错误: 文件 $CURL_COMMAND_FILE 未找到。"
   exit 1

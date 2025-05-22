@@ -9,11 +9,11 @@ import zipfile  # 用于创建压缩文件
 import datetime # 用于生成带时间戳的文件名
 
 # 配置
-MAIN_SH_SCRIPT = "./main.sh"
+BASE_SH_SCRIPT = "./base.sh"
 TEST_SH_SCRIPT = "./test.sh"
 
-# main.sh 输出的目录名
-MAIN_OUTPUT_DIR = "main"
+# base.sh 输出的目录名
+BASE_OUTPUT_DIR = "base"
 # test.sh 实际输出的目录名 (根据 test.sh 脚本)
 TEST_SH_ACTUAL_OUTPUT_DIR = "test"
 # test.sh 输出重命名后的目标目录名，用于比较 (与实际目录相同，不需要重命名)
@@ -183,17 +183,17 @@ def main():
     parser.add_argument(
         "--skiptest",
         action="store_true",
-        help="如果设置此参数，则跳过执行 main.sh 和 test.sh，直接进行比较。"
+        help="如果设置此参数，则跳过执行 base.sh 和 test.sh，直接进行比较。"
     )
     args = parser.parse_args()
 
     if not args.skiptest:
-        # 1. 清理并创建 main.sh 的输出目录
-        if os.path.exists(MAIN_OUTPUT_DIR):
-            print(f"正在移除已存在的目录: {MAIN_OUTPUT_DIR}")
-            shutil.rmtree(MAIN_OUTPUT_DIR)
-        os.makedirs(MAIN_OUTPUT_DIR, exist_ok=True)
-        print(f"已创建/确保目录 {MAIN_OUTPUT_DIR} 存在。")
+        # 1. 清理并创建 base.sh 的输出目录
+        if os.path.exists(BASE_OUTPUT_DIR):
+            print(f"正在移除已存在的目录: {BASE_OUTPUT_DIR}")
+            shutil.rmtree(BASE_OUTPUT_DIR)
+        os.makedirs(BASE_OUTPUT_DIR, exist_ok=True)
+        print(f"已创建/确保目录 {BASE_OUTPUT_DIR} 存在。")
 
         # 清理 test.sh 可能产生的旧目录 (实际输出目录和目标比较目录)
         if os.path.exists(TARGET_TEST_OUTPUT_DIR):
@@ -203,13 +203,13 @@ def main():
             print(f"正在移除已存在的目录: {TEST_SH_ACTUAL_OUTPUT_DIR}")
             shutil.rmtree(TEST_SH_ACTUAL_OUTPUT_DIR)
 
-        # 2. 执行 main.sh
-        # 假设 main.sh 会将其输出放入 MAIN_OUTPUT_DIR
-        print(f"\n--- 开始执行 {MAIN_SH_SCRIPT} ---")
-        if not run_shell_script(MAIN_SH_SCRIPT):
-            print(f"{MAIN_SH_SCRIPT} 执行失败，中止操作。")
+        # 2. 执行 base.sh
+        # 假设 base.sh 会将其输出放入 BASE_OUTPUT_DIR
+        print(f"\n--- 开始执行 {BASE_SH_SCRIPT} ---")
+        if not run_shell_script(BASE_SH_SCRIPT):
+            print(f"{BASE_SH_SCRIPT} 执行失败，中止操作。")
             return
-        print(f"--- {MAIN_SH_SCRIPT} 执行完毕 ---")
+        print(f"--- {BASE_SH_SCRIPT} 执行完毕 ---")
 
         # 3. 执行 test.sh
         print(f"\n--- 开始执行 {TEST_SH_SCRIPT} ---")
@@ -228,8 +228,8 @@ def main():
     else:
         print("--- 跳过脚本执行，直接进行比较 ---")
         # 确保比较目录存在
-        if not os.path.exists(MAIN_OUTPUT_DIR):
-            print(f"错误: 目录 {MAIN_OUTPUT_DIR} 不存在。请先运行脚本或确保输出已就绪。")
+        if not os.path.exists(BASE_OUTPUT_DIR):
+            print(f"错误: 目录 {BASE_OUTPUT_DIR} 不存在。请先运行脚本或确保输出已就绪。")
             return
         if not os.path.exists(TARGET_TEST_OUTPUT_DIR):
             print(f"错误: 目录 {TARGET_TEST_OUTPUT_DIR} 不存在。请先运行脚本或确保输出已就绪。")
@@ -237,43 +237,43 @@ def main():
 
 
     # 5. 比较输出文件
-    print(f"\n--- 开始比较 {MAIN_OUTPUT_DIR} 和 {TARGET_TEST_OUTPUT_DIR} 中的文件 ---")
+    print(f"\n--- 开始比较 {BASE_OUTPUT_DIR} 和 {TARGET_TEST_OUTPUT_DIR} 中的文件 ---")
     differing_file_numbers = set()
 
-    if not os.path.isdir(MAIN_OUTPUT_DIR):
-        print(f"错误: {MAIN_OUTPUT_DIR} 不是一个有效的目录。")
+    if not os.path.isdir(BASE_OUTPUT_DIR):
+        print(f"错误: {BASE_OUTPUT_DIR} 不是一个有效的目录。")
         return
     if not os.path.isdir(TARGET_TEST_OUTPUT_DIR):
         print(f"错误: {TARGET_TEST_OUTPUT_DIR} 不是一个有效的目录。")
         return
 
-    main_dir_files = os.listdir(MAIN_OUTPUT_DIR)
+    base_dir_files = os.listdir(BASE_OUTPUT_DIR)
 
-    for filename in main_dir_files:
+    for filename in base_dir_files:
         file_number = get_file_number(filename)
         if not file_number:
-            print(f"跳过文件 {filename} (在 {MAIN_OUTPUT_DIR} 中)，因其不符合 'response_N.txt' 格式。")
+            print(f"跳过文件 {filename} (在 {BASE_OUTPUT_DIR} 中)，因其不符合 'response_N.txt' 格式。")
             continue
 
-        main_file_path = os.path.join(MAIN_OUTPUT_DIR, filename)
+        base_file_path = os.path.join(BASE_OUTPUT_DIR, filename)
         test_file_path = os.path.join(TARGET_TEST_OUTPUT_DIR, filename)
 
         if not os.path.exists(test_file_path):
-            print(f"差异: 文件 {filename} 存在于 {MAIN_OUTPUT_DIR} 但不存在于 {TARGET_TEST_OUTPUT_DIR}。")
-            differing_file_numbers.add((file_number, "missing_in_test", main_file_path, test_file_path))
+            print(f"差异: 文件 {filename} 存在于 {BASE_OUTPUT_DIR} 但不存在于 {TARGET_TEST_OUTPUT_DIR}。")
+            differing_file_numbers.add((file_number, "missing_in_test", base_file_path, test_file_path))
         elif not os.path.isfile(test_file_path):
             print(f"差异: {test_file_path} 不是一个文件。")
-            differing_file_numbers.add((file_number, "missing_in_test", main_file_path, test_file_path))
+            differing_file_numbers.add((file_number, "missing_in_test", base_file_path, test_file_path))
         else:
-            print(f"正在比较: {main_file_path} 与 {test_file_path}")
-            is_same, main_content_json, test_content_json = compare_json_content(main_file_path, test_file_path)
+            print(f"正在比较: {base_file_path} 与 {test_file_path}")
+            is_same, base_content_json, test_content_json = compare_json_content(base_file_path, test_file_path)
             if not is_same:
                 print(f"差异: 文件 {filename} (编号: {file_number}) 内容不同。")
-                differing_file_numbers.add((file_number, "content_different", main_file_path, test_file_path))
+                differing_file_numbers.add((file_number, "content_different", base_file_path, test_file_path))
             else:
                 print(f"相同: 文件 {filename} (编号: {file_number}) 内容一致。")
 
-    # 检查 TARGET_TEST_OUTPUT_DIR 中存在但 MAIN_OUTPUT_DIR 中不存在的文件
+    # 检查 TARGET_TEST_OUTPUT_DIR 中存在但 BASE_OUTPUT_DIR 中不存在的文件
     test_dir_files = os.listdir(TARGET_TEST_OUTPUT_DIR)
     for filename in test_dir_files:
         file_number = get_file_number(filename)
@@ -281,11 +281,11 @@ def main():
             # print(f"跳过文件 {filename} (在 {TARGET_TEST_OUTPUT_DIR} 中)，因其不符合 'response_N.txt' 格式。")
             continue
         
-        main_file_path_check = os.path.join(MAIN_OUTPUT_DIR, filename)
+        base_file_path_check = os.path.join(BASE_OUTPUT_DIR, filename)
         test_file_path = os.path.join(TARGET_TEST_OUTPUT_DIR, filename)
-        if not os.path.exists(main_file_path_check):
-            print(f"差异: 文件 {filename} 存在于 {TARGET_TEST_OUTPUT_DIR} 但不存在于 {MAIN_OUTPUT_DIR}。")
-            differing_file_numbers.add((file_number, "missing_in_main", main_file_path_check, test_file_path))
+        if not os.path.exists(base_file_path_check):
+            print(f"差异: 文件 {filename} 存在于 {TARGET_TEST_OUTPUT_DIR} 但不存在于 {BASE_OUTPUT_DIR}。")
+            differing_file_numbers.add((file_number, "missing_in_base", base_file_path_check, test_file_path))
 
     # 6. 将有差异的文件复制到 /diff 目录，并添加前缀
     # 按编号排序差异项
@@ -304,20 +304,20 @@ def main():
         
         # 复制每个有差异的文件
         for item in sorted_differing_items:
-            number, diff_type, main_path, test_path = item
+            number, diff_type, base_path, test_path = item
             
             if diff_type == "content_different":
                 # 两个文件内容不同，都需要复制
-                copy_file_with_prefix(main_path, DIFF_DIR, "main")
+                copy_file_with_prefix(base_path, DIFF_DIR, "base")
                 copy_file_with_prefix(test_path, DIFF_DIR, "test")
                 
-            elif diff_type == "missing_in_main":
-                # main 中缺失文件，只复制 test 中的文件
+            elif diff_type == "missing_in_base":
+                # base 中缺失文件，只复制 test 中的文件
                 copy_file_with_prefix(test_path, DIFF_DIR, "test")
                 
             elif diff_type == "missing_in_test":
-                # test 中缺失文件，只复制 main 中的文件
-                copy_file_with_prefix(main_path, DIFF_DIR, "main")
+                # test 中缺失文件，只复制 base 中的文件
+                copy_file_with_prefix(base_path, DIFF_DIR, "base")
     else:
         print("\n未发现任何差异。")
 
