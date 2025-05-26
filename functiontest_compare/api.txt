@@ -30,6 +30,7 @@ Get Ft Tokens
 Decode Ft Tx History
 Get Holder Rank
 Get Token List Held By Address
+Get Tokens List Held By Combine Script
 Get Pool List
 Get Pools Of A Token By Contract ld
 Get Pool History

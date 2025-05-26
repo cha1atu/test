@@ -30,6 +30,7 @@ curl --location --request GET 'https://turingwallet.xyz/v1/tbc/main/ft/tokens/pa
 curl --location --request GET 'https://turingwallet.xyz/v1/tbc/main/ft/decode/tx/history/c494d97cc4d57ef40e3fd253fd7cc0b17a72f7da5a11daf6d66ee9058d439c02'
 curl --location --request GET 'https://turingwallet.xyz/v1/tbc/main/ft/holder/rank/contract/a2d772d61afeac6b719a74d87872b9bbe847aa21b41a9473db066eabcddd86f3/page/0/size/1'
 curl --location --request GET 'https://turingwallet.xyz/v1/tbc/main/ft/tokens/held/by/address/14J7WJiw35CjkkxwzmK4YrxkmywvBye3ot'
+curl --location --request GET 'https://turingwallet.xyz/v1/tbc/main/ft/tokens/held/by/combine/script/dbe27bf5e8b1c3ba966d13aca95009756eabf15901'
 curl --location --request GET 'https://turingwallet.xyz/v1/tbc/main/ft/pool/list/page/0/size/10'
 curl --location --request GET 'https://turingwallet.xyz/v1/tbc/main/ft/pools/of/token/contract/id/0467f052ec9f0238d2c2393ecb06cc2f99a3688e6eea26bed3d488f43ad22347'
 curl --location --request GET 'https://turingwallet.xyz/v1/tbc/main/ft/pool/history/pool/id/035ffbf5c6770f91488a34d4ff7f292755d90c018377d8bc930413e31de6b78e/page/0/size/1'
